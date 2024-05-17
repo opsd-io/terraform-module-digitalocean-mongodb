@@ -1,5 +1,5 @@
 module "example" {
-  source = "github.com/opsd-io/terraform-module-digitalocean-mongodb"
+  source = "github.com/opsd-io/terraform-module-digitalocean-mongodb?ref=1-add-mongo-do-tf-module"
 
   cluster_name           = "opsd-mongodb-main-stg"
   postgresql_version     = "16"
