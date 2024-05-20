@@ -1,8 +1,10 @@
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://www-opsd-io.s3.eu-central-1.amazonaws.com/OPSdiy/OPSdiy-Medium-drk-slogan.png">
-  <source media="(prefers-color-scheme: light)" srcset="https://www-opsd-io.s3.eu-central-1.amazonaws.com/OPSdiy/OPSdiy-Medium-lgt-slogan.png">
-  <img alt="OPSdiy - the effortless way of managing cloud infrastructure." src="https://www-opsd-io.s3.eu-central-1.amazonaws.com/OPSdiy/OPSdiy-Medium-lgt-slogan.png" width="700">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/opsd-io/terraform-module-template/main/.github/img/opsd-github-repo-dark-mode.svg">
+  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/opsd-io/terraform-module-template/main/.github/img/opsd-github-repo-light-mode.svg">
+  <img alt="OPSd - the unique and effortless way of managing cloud infrastructure." src="https://raw.githubusercontent.com/opsd-io/terraform-module-template/update-tools/.github/img/opsd-github-repo-light-mode.svg" width="400">
 </picture>
+
+Meet **OPSd**. The unique and effortless way of managing cloud infrastructure.
 
 # terraform-module-template
 
@@ -13,13 +15,17 @@ What does the module provide?
 ## Usage
 
 ```hcl
-module "module_name" {
-  source = "github.com/opsd-io/terraform-module-template?ref=VERSION"
+module "terraform-module-digitalocean-mongodb" {
 
-  name = "module-template"
-  size = 9000
+  cluster_name            = "example-mongodb-cluster"
+  engine                  = "pg"
+  postgresql_version      = "11"
+  node_size               = "db-s-1vcpu-1gb"
+  region                  = "nyc1"
+  node_count              = 1
+  common_tags             = ["production"]
+  database_users          = ["Admin", "Mark", "Robert"]
 }
-
 ```
 
 **IMPORTANT**: Make sure not to pin to master because there may be breaking changes between releases.
@@ -30,12 +36,13 @@ module "module_name" {
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5.5 |
+| <a name="requirement_digitalocean"></a> [digitalocean](#requirement\_digitalocean) | >= 2.34.1 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_terraform"></a> [terraform](#provider\_terraform) | n/a |
+| <a name="provider_digitalocean"></a> [digitalocean](#provider\_digitalocean) | >= 2.34.1 |
 
 ## Modules
 
@@ -45,23 +52,38 @@ No modules.
 
 | Name | Type |
 |------|------|
-| [terraform_data.main](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
+| [digitalocean_database_cluster.main](https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/database_cluster) | resource |
+| [digitalocean_database_firewall.main](https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/database_firewall) | resource |
+| [digitalocean_database_user.main](https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/database_user) | resource |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_name"></a> [name](#input\_name) | A name for the test resource. | `string` | n/a | yes |
-| <a name="input_parent_id"></a> [parent\_id](#input\_parent\_id) | The ID of the parent resource. Change will trigger a recreation. | `string` | `null` | no |
-| <a name="input_size"></a> [size](#input\_size) | A size for the test resource in MiB. | `number` | `256` | no |
+| <a name="input_cluster_name"></a> [cluster\_name](#input\_cluster\_name) | The name of the database cluster. | `string` | n/a | yes |
+| <a name="input_common_tags"></a> [common\_tags](#input\_common\_tags) | A list of tag names to be applied to the database cluster. | `set(string)` | `[]` | no |
+| <a name="input_database_users"></a> [database\_users](#input\_database\_users) | List of users. | `set(string)` | `[]` | no |
+| <a name="input_firewall_rules"></a> [firewall\_rules](#input\_firewall\_rules) | List of trusted sources associated with the cluster. | `set(string)` | `[]` | no |
+| <a name="input_mongodb_version"></a> [mongodb\_version](#input\_mongodb\_version) | Engine version used by the cluster. | `number` | `7` | no |
+| <a name="input_node_count"></a> [node\_count](#input\_node\_count) | Number of mongodb nodes that will be created. | `number` | `1` | no |
+| <a name="input_node_size"></a> [node\_size](#input\_node\_size) | The mongodb node instance size. | `string` | `"db-s-1vcpu-1gb"` | no |
+| <a name="input_region"></a> [region](#input\_region) | DigitalOcean region where the cluster will reside. | `string` | n/a | yes |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| <a name="output_byte_size"></a> [byte\_size](#output\_byte\_size) | The size of the resource, in bytes. |
-| <a name="output_full_name"></a> [full\_name](#output\_full\_name) | The full name of the resource. |
-| <a name="output_id"></a> [id](#output\_id) | A string value unique to the resource instance. |
+| <a name="output_firewall_id"></a> [firewall\_id](#output\_firewall\_id) | A unique identifier for the firewall. |
+| <a name="output_main_default_database"></a> [main\_default\_database](#output\_main\_default\_database) | Name of the cluster's default database. |
+| <a name="output_main_default_user"></a> [main\_default\_user](#output\_main\_default\_user) | Username for the cluster's default user. |
+| <a name="output_main_default_user_password"></a> [main\_default\_user\_password](#output\_main\_default\_user\_password) | Password for the cluster's default user. |
+| <a name="output_main_host"></a> [main\_host](#output\_main\_host) | Database cluster's hostname. |
+| <a name="output_main_host_id"></a> [main\_host\_id](#output\_main\_host\_id) | The ID of the database cluster. |
+| <a name="output_main_port"></a> [main\_port](#output\_main\_port) | Network port that the database cluster is listening on. |
+| <a name="output_main_private_host"></a> [main\_private\_host](#output\_main\_private\_host) | Same as host, but only accessible from resources within the account and in the same region. |
+| <a name="output_main_private_uri"></a> [main\_private\_uri](#output\_main\_private\_uri) | Same as uri, but only accessible from resources within the account and in the same region. |
+| <a name="output_main_uri"></a> [main\_uri](#output\_main\_uri) | The full URI for connecting to the database cluster. |
+| <a name="output_user_ids"></a> [user\_ids](#output\_user\_ids) | A unique identifier for database users. |
 <!-- END_TF_DOCS -->
 
 ## Examples of usage
